@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Article and Headline Classifier</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    .inner_div {
+      float:left;
+      width:100%;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 450px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      padding-left: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    .space {
+      margin-bottom: 20 px;
+    }
+
+      .wrapper {
+        width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0px;
+     }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+
+    
+  </style>
+</head>
+<body>
+ <div class="col-sm-12 clearfix">
+    <div class="inner_div">
+      <h1>Finding the Signature of Article Text</h1>
+
+    <h3>Enter example headline text</h3>
+    <form name="input-form" action="/" method="post">
+  <input type="text" name="headline"></input>
+<!--  <input type="submit" value="Submit Headline" name="submit"></input> -->
+      <h3>Enter example article body text</h3>
+  <input type="text" name="content"></input>
+  <input type="submit" value="Submit Content" name="submit"></input><br><br>
+    </form>
+    </div>
+<!--    {% if headline %} -->
+    <div class="inner_div">
+    <strong><font> The input headline was:</font></strong> {{ headline }}<br><br>
+    <strong><font color = 'grey'>News likeness score for headline is:</font>{{ news_likeness }}<br></strong>
+    <strong><font color ='grey'> Partisan trash likeness score for headline is:</font>{{ partisan_opinion_likeness }}<br></strong>
+    <strong><font color = 'grey'>Tabloid likeness score for headline is:</font>{{ tabloid_likeness }}<br><br></strong>
+    </div>
+<!--    {% endif %} -->
+
+<!--    {% if content %} -->
+    <div class="inner_div">
+    <strong><font color='navy'> The input content started with: </font> </strong>{{ content[:80] }} ...<br><br>
+    <strong><font color='grey'>News likeness score for body text is:</font> {{ cont_news_likeness }}<br></strong>
+    <strong><font color='grey'> Partisan trash likeness score for body text is:</font>{{ cont_partisan_opinion_likeness }}</strong><br>
+    <strong><font color='grey'> Tabloid likeness score for body text is:</font>{{ cont_tabloid_likeness }}</strong><br><br>
+    </div>
+
+    <div class="inner_div">
+      <strong><font color ='navy'>A few things to consider when evaluating the content you read online:</font></strong><br><br>
+
+	
+      <li><b>Who is the originator of the content and when was the website created?</b></li>
+      <i>Many exploitative news sites continually change domain names and have short histories.</i><br><br>
+      
+      <li><b>Are sources used and are they reputable?</b></li>
+      <i>Tabloids and opinion based rhetoric tends to rely on unnamed sources with little backup or reference.</i><br><br>
+      
+      <li><b>Are opposing sources quoted when content is controversial?</b></li>
+      <i>A tradition in journalism is to present opposing viewpoints when opinions or ideas are in question.</i><br><br>
+
+      <li><b>Has the article been updated since it was released?</b></li>
+      <i>Ethical journalism practice requires updating mistakes if they are discovered. A log of changes can give insight into the article and the standard of practice behind a publication.</i><br><br>
+	  
+    </div>
+<br>
+        <div class="inner_div">
+      <strong><font color ='navy'>What went into the scores the text I input received?</font></strong><br><br>
+      <li><strong><font color ='navy'>Headline Scoring:</font></strong><br><br>
+	<ul>
+          <li><b>Punctuation use:</b><i><br>Tabloids and opinion/rhetoric tends to use ! and ?</i></li><br>
+	  <li><b>Length of headline and number of sentences:</b><br><i>News articles tend to have longer, single sentence headlines. Tabloids tend to have short, mulit-sentence headlines.</i></li><br>
+	  <li><b>Sentiment score: </b><br><i>News articles tend to be neutral, tabloids negative, and rhetoric positive in sentiment scoring.</i></li><br>
+	  <li><b>Subjectivity score:</b><br> <i>News articles tend to be objective, opinion tends to be subjective.</i></li><br>
+	  <li><b>Use of specific words and phrasings:</b><br><i> Gossip and rhetoric have key words and phrasings.</i></li><br>
+	  <li><b>Language pattern:</b><br><i> Language style tends to vary between publications and headline types.</i></li><br>
+        </ul>
+      <li><strong><font color ='navy'>Content Scoring:</font></strong><br><br>
+	<ul>
+          <li><b>Punctuation use:</b><br><i>News articles tend to use more notations of quotes and sources -. Tabloids tend to use exclamation points!. Opinion and rhetoric tends to use question marks?. </li></i><br>
+	  <li><b>Repetition of part of speech phrasing:</b><br><i>News articles tend to use possesive endings and 3rd person verbs as they describe events and quote sources. Tabloids tend to use many prepositions and discuss people and their actions in third person present form. Opinion and rhetoric tends to use determiners (noun modifications) followed by proper nouns i.e. use language that expresses a classification or pre-determined judgement of a person, group, or organization.</i></li><br>
+	  <li><b>Language pattern:</b><br> <i>News articles tend to work through descriptions and references. Opinion and rhetoric tends to repeat questioning, judgements, and descriptions of actions. Tabloids tend to repeat descriptions of people, common nouns, and phrases like 'in her/his' or 'a source says'.</i></li><br><br>
+        </ul>
+	
+	</div>
+	</div>
+<!--    {% endif %} -->
+    
+</body>
+</html>
