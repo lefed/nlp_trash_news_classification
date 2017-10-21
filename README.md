@@ -6,3 +6,15 @@ If you would like to try out the app, download the files from this repo and run 
 
 ![](https://github.com/lefed/nlp_trash_news_classification/blob/master/images/flask_app_landing.png)
 
+Choose an online article to evaluate - for example we could use the following [CBC News Article](http://www.cbc.ca/news/world/spain-cabinet-catalonia-1.4365757)
+
+This particular article returns as being predominantly like news - both for its headline and content as can be seen from the screenshots below.
+
+![](https://github.com/lefed/nlp_trash_news_classification/blob/master/images/example_CBC_article_1.png)
+
+![](https://github.com/lefed/nlp_trash_news_classification/blob/master/images/example_CBC_article_2.png)
+
+![](https://github.com/lefed/nlp_trash_news_classification/blob/master/images/example_CBC_article_3.png)
+
+![](https://github.com/lefed/nlp_trash_news_classification/blob/master/images/example_CBC_article_4.png)
+
