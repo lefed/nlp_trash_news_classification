@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[112]:
-
 import pandas as pd
 import numpy as np
 from sklearn import datasets, random_projection 
@@ -34,23 +29,15 @@ from sklearn.feature_extraction.text import TfidfTransformer
 tfidf_transformer = TfidfTransformer()
 
 
-# In[121]:
-
 import re
 
-
-# In[122]:
-
+#removal of extra punctuation from scrapped text
 remove_bracket_content = lambda x: re.sub("[\(\[].*?[\)\]]", "", str(x))
 
-
-# In[124]:
-
+#split header text based on new line breaks
 header_split = lambda x: str(x).split('\n')
 
-
-# In[126]:
-
+#helper function to parse header content
 def header_parse(x):
     
     if 'LIVE' in x:
@@ -65,9 +52,7 @@ def header_parse(x):
         
     return title, topic, author
 
-
-# In[127]:
-
+#helper function to parse title content
 def title_parse(x):
         
     if 'LIVE' in x:
@@ -78,9 +63,7 @@ def title_parse(x):
 
     return title
 
-
-# In[128]:
-
+#helper function to parse topic from text
 def topic_parse(x):
     
     if 'LIVE' in x:
@@ -92,8 +75,7 @@ def topic_parse(x):
     return topic
 
 
-# In[129]:
-
+#helper function to parse author from text
 def author_parse(x):
     
     if 'LIVE' in x:
@@ -105,8 +87,7 @@ def author_parse(x):
     return author
 
 
-# In[130]:
-
+#helper function to parse news topic
 def news_topic_parse(x):
     
     url_str = str(x)
@@ -120,8 +101,7 @@ def news_topic_parse(x):
     
 
 
-# In[141]:
-
+#helper function to parse headlines from rebel
 def rebel_headline_parse(x):
     if len(x)>1:
         headline = str(x[1])
@@ -129,6 +109,7 @@ def rebel_headline_parse(x):
         headline = 0
     return headline
 
+#helper function to parse date 
 def rebel_publish_date_parse(x):
     if len(x)>0:
         publish_date = str(x[0])
@@ -136,6 +117,7 @@ def rebel_publish_date_parse(x):
         publish_date = 0
     return publish_date
 
+#helper function to parse author from rebel text
 def rebel_author_parse(x):
     if len(x)>2:
         author = str(x[2])
@@ -144,8 +126,7 @@ def rebel_author_parse(x):
     return author
 
 
-# In[156]:
-
+#helper function for tabloid date and author
 def star_get_author_date(x):
     if len(x)>1:
         author_date = str(x[-1])
@@ -153,6 +134,7 @@ def star_get_author_date(x):
         author_date = 0
     return author_date
 
+#helper function to parse star headlines
 def star_get_headline(x):
     if len(x)>0:
         headline = ''.join(str(i)+' ' for i in x[:-1])
@@ -162,32 +144,26 @@ def star_get_headline(x):
     
 
 
-# In[162]:
-
+#helper function to apply to text information to ensure proper string format without extra spaces
 make_string = lambda x: str(x).strip()
 
-
-# In[163]:
 
 def make_string(x):
     return(str(x).strip())
 
 
-# In[164]:
-
+#helper function to remove extra punctuation and clean text
 def clean_string(x):
     ''.join(x.split("\\"))
     x.replace('( )', '').replace('. "', '."')
     return x
 
 
-# In[170]:
-
+#list of custom stop words to be used for nlp - these are trigger words or punctuation that should not be used to allow for source prediction
 custom_stop_words =['warning', 'star', 'language warning', 'cbc', 'Rebel', 'language', '( )', '. “','. ``', '00', '( )', 'i' , 'a', 'magazine', 'ok', 't', '``', 'weekly', '“', '”','s', '‘', "'s", '’', "'re", "n't", 'didn', 'powered', "ikea®", 'www.ikea.com/us/kitchens', 'ikea', 've', 'aug.', 'ca', 'l', 'la', 'rebel', "'m", 'kitchen', 'kitchens', 'quantico' ]
 
 
-# In[171]:
-
+#customized punctuation list so as to allow for understanding of how !, ?, and - are used but not use other punctuation counts
 custom_punct = list(string.punctuation)
 custom_punct.append('""')
 custom_punct.append("''")
@@ -196,13 +172,11 @@ custom_punct.remove('?')
 custom_punct.remove('-')
 
 
-# In[172]:
-
+#count vectorizer
 count_vect = CountVectorizer(analyzer='word', stop_words=custom_stop_words + custom_punct, tokenizer=word_tokenize)
 
 
-# In[175]:
-
+#helper function to use part of speech tagging and include in full sentence of text
 def pos_tag_and_flat(x):
     text = nltk.tokenize.word_tokenize(x)
     pos = nltk.pos_tag(text)
@@ -211,8 +185,7 @@ def pos_tag_and_flat(x):
     return str1
 
 
-# In[176]:
-
+#helper function to use only part of speech tagging and custom punctuation to understand language syntax
 def pos_tag_only(x):
     text = nltk.tokenize.word_tokenize(x)
     pos = nltk.pos_tag(text)
@@ -221,8 +194,7 @@ def pos_tag_only(x):
     return x_pos_str
 
 
-# In[177]:
-
+#helper function to replace names so as not to provide easy prediction of source
 def replace_names(text):
     first_names_df = pd.read_csv('first_names.txt', header = None, sep = ',')
     most_common_first_names_df = first_names_df.nlargest(800, [2]).reset_index()
@@ -234,13 +206,11 @@ def replace_names(text):
     return (str(new_text))
 
 
-# In[178]:
-
+#sentence tokenizer
 sent_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
 
-# In[179]:
-
+#helper class to transform content to Dense Matrix to allow for proper predictive model input 
 class DenseTransformer(TransformerMixin):
 
     def transform(self, X, y=None, **fit_params):
@@ -254,8 +224,7 @@ class DenseTransformer(TransformerMixin):
         return self
 
 
-# In[180]:
-
+#helper class to convert information into required strings from multiple documents
 class make_string_class(BaseEstimator, TransformerMixin):
     """Extract features from each document for DictVectorizer"""
 
@@ -270,8 +239,7 @@ class make_string_class(BaseEstimator, TransformerMixin):
         return(string_series)
 
 
-# In[181]:
-
+#helper class to do part of speech tagging and flattening
 class pos_tag_and_flat_class(BaseEstimator, TransformerMixin):
     """Extract features from each document for DictVectorizer"""
 
@@ -285,8 +253,7 @@ class pos_tag_and_flat_class(BaseEstimator, TransformerMixin):
         return(pos_tag_series)
 
 
-# In[182]:
-
+#helper class to do part of speech tagging and return only POS and punctuation
 class pos_tag_only_class(BaseEstimator, TransformerMixin):
     """Extract features from each document for DictVectorizer"""
 
@@ -300,8 +267,7 @@ class pos_tag_only_class(BaseEstimator, TransformerMixin):
         return(pos_tag_series)
 
 
-# In[183]:
-
+#helper class to remove common names
 class replace_names_class(BaseEstimator, TransformerMixin):
     """Extract features from each document for DictVectorizer"""
 
@@ -315,8 +281,7 @@ class replace_names_class(BaseEstimator, TransformerMixin):
         return(name1_names)
 
 
-# In[184]:
-
+#helper class for dataframe creation for formatting for model
 class make_df_class(BaseEstimator, TransformerMixin):
     """Extract features from each document for DictVectorizer"""
 
@@ -331,9 +296,7 @@ class make_df_class(BaseEstimator, TransformerMixin):
         print("after make_df_class:", type(df_mid), df_mid.shape)
         return(df_mid)
 
-
-# In[185]:
-
+#pipeline for cleaning and parsing text data
 clean_content_pipeline = Pipeline([
     ('makestr', make_string_class()),
     ('make_df', make_df_class()),
@@ -342,8 +305,7 @@ clean_content_pipeline = Pipeline([
 ])
 
 
-# In[186]:
-
+#pipeline for cleaning, vectorizing, and modeling
 ppl1 = Pipeline([
               ('clean_input', clean_content_pipeline),
               ('vectorizer', CountVectorizer(ngram_range=(1, 3), analyzer='word', stop_words=custom_stop_words + custom_punct, tokenizer=word_tokenize)),
@@ -359,19 +321,15 @@ ppl1 = Pipeline([
 #y_pred_proba = model.predict_proba(X_test)
 
 
-# In[197]:
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from textblob import TextBlob
 
 
-# In[200]:
-
+#stop words list for headlines
 headline_stop_words = ['Trudeau', 'Trump', 'alberta', 'live','bc', 'listen', 'trump', 'trudeau', 'mcinnes', 'name1m', 'daily', 'roundup', 'streams', 'stream', 'eclipse', 'toronto', 'edge', 'celebrity', 'montreal', 'solar', 'radio', 'introducing', 'notley', 'tommy', 'robinson', 'ann', 'coulter', 'thicke', 'kardashian', 'kim']
 
 
-# In[201]:
-
+#helper class to create numerical statistics of text data to be weighted and used in model for prediction
 class TextStats(BaseEstimator, TransformerMixin):
     """Extract features from each document for DictVectorizer"""
 
@@ -385,17 +343,14 @@ class TextStats(BaseEstimator, TransformerMixin):
                 'subjectivity_score': TextBlob(text).sentiment[1]}
                 for text in docs]
 
-
-# In[202]:
-
+#pipeline for text stat creation and vectorization
 text_stats_pipeline = Pipeline([
                     ('stats', TextStats()),
                     ('vect', DictVectorizer())
                 ])
 
 
-# In[203]:
-
+#pipeline for cleaning and parsing headlines
 clean_headline_pipeline = Pipeline([
     ('makestr', make_string_class()),
     ('make_df', make_df_class()),
@@ -404,8 +359,7 @@ clean_headline_pipeline = Pipeline([
 ])
 
 
-# In[204]:
-
+#pipeline for cleaning and predicting headline classification
 ppl2 = Pipeline([
         ('clean_headline', clean_headline_pipeline),
         ('union', FeatureUnion(
