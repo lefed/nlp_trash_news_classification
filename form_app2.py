@@ -1,3 +1,5 @@
+#this file represents the nlp classifier flask app
+
 from flask import request, redirect, render_template
 import Python_Helper_Utils
 from Python_Helper_Utils import make_string_class, make_df_class, pos_tag_and_flat_class, replace_names_class, TextStats, pos_tag_only_class
@@ -14,8 +16,10 @@ from flask import render_template
 
 #----------MODEL IN MEMORY---------------#
 
+#load model created for headline classification
 headline_classification_model = joblib.load('news_headline_classification_model.pkl')
 
+#load model created for content classification
 news_content_classification_model = joblib.load('news_content_classification_model.pkl')
 
 #---------- URLS AND WEB PAGES -------------#
